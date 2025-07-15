@@ -80,6 +80,7 @@ ChArUcoDetector::ChArUcoDetector()
 	declare_parameter("tf_parameters.sensor_frame_override", std::string(""));
 	declare_parameter("tf_parameters.charuco_tf_frame", std::string("charuco"));
 	declare_parameter("subscribers.image_topic.topic", std::string("image_raw"));
+	declare_parameter("subscribers.use_camera_info", false);
 	declare_parameter("subscribers.camera_info.topic", std::string("camera_info"));
 	declare_parameter("publishers.image_results_publisher.queue_size", 1);
 	declare_parameter("publishers.image_results_publisher.latch", false);
@@ -148,6 +149,7 @@ void ChArUcoDetector::setupConfigurationFromParameterServer() {
 	get_parameter("tf_parameters.sensor_frame_override", sensor_frame_override_);
 	get_parameter("tf_parameters.charuco_tf_frame", charuco_tf_frame_);
 	get_parameter("subscribers.image_topic.topic", image_topic_);
+	get_parameter("subscribers.use_camera_info", use_camera_info_);
 	get_parameter("subscribers.camera_info.topic", camera_info_topic_);
 	get_parameter("publishers.image_results_publisher.queue_size", imageQueueSize);
 	get_parameter("publishers.image_results_publisher.latch", imageLatch);
@@ -225,6 +227,9 @@ void ChArUcoDetector::getCameraCalibrationCoefficient() {
 	}
 }
 void ChArUcoDetector::cameraInfoCallback(const sensor_msgs::msg::CameraInfo::ConstSharedPtr &_msg) {
+	if(!use_camera_info_)
+		return;
+	
 	bool valid_camera_info = false;
 	for (size_t i = 0; i < _msg->k.size(); ++i) {
 		if (_msg->k[i] != 0.0) {

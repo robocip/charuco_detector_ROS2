@@ -103,6 +103,7 @@ private:
 	double tf_broadcaster_republish_rate_;
 	int imageQueueSize;
 	bool imageLatch;
+	bool use_camera_info_;
 
 	std::string file_path_;
 	std::string sensor_frame_override_;
